@@ -101,11 +101,9 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
     }
 
     override fun onDetachedFromActivity() {
-        TODO("Not yet implemented")
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        TODO("Not yet implemented")
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
@@ -113,7 +111,6 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        TODO("Not yet implemented")
     }
 }
 
