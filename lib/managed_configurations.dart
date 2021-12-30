@@ -18,12 +18,12 @@ class ManagedConfigurations {
   static Stream<Map<String, dynamic>?> _managedConfigurationsStream =
       _mangedConfigurationsController.stream.asBroadcastStream();
 
-  /// Returns a broadcasst stream which calls on managed app configuration changes
+  /// Returns a broadcast stream which calls on managed app configuration changes
   /// Json will be returned
-  /// Call [dispose] when stream is not more necassary
+  /// Call [dispose] when stream is not more necessary
   static Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
-    if (_actionApplicationRestrictionsChangedubscription == null) {
-      _actionApplicationRestrictionsChangedubscription =
+    if (_actionApplicationRestrictionsChangedSubscription == null) {
+      _actionApplicationRestrictionsChangedSubscription =
           _managedConfigurationEventChannel
               .receiveBroadcastStream()
               .listen((newManagedConfigurations) {
@@ -37,20 +37,20 @@ class ManagedConfigurations {
   }
 
   static StreamSubscription<dynamic>?
-      _actionApplicationRestrictionsChangedubscription;
+      _actionApplicationRestrictionsChangedSubscription;
 
   /// Returns managed app configurations as Json
   static Future<Map<String, dynamic>?> get getManagedConfigurations async {
-    final String? version = await _managedConfigurationMethodChannel
+    final String? rawJson = await _managedConfigurationMethodChannel
         .invokeMethod(getManagedConfiguration);
-    if (version != null) {
-      return json.decode(version);
+    if (rawJson != null) {
+      return json.decode(rawJson);
     } else {
       return null;
     }
   }
 
   static dispose() {
-    _actionApplicationRestrictionsChangedubscription?.cancel();
+    _actionApplicationRestrictionsChangedSubscription?.cancel();
   }
 }
