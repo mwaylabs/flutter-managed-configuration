@@ -3,6 +3,8 @@ package io.mway.managed_configurations
 import android.app.Activity
 import android.content.*
 import androidx.annotation.NonNull
+import androidx.enterprise.feedback.KeyedAppState
+import androidx.enterprise.feedback.KeyedAppStatesReporter
 import com.google.gson.GsonBuilder
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -21,17 +23,13 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
     private var eventChannel: EventChannel? = null
     private var eventSink: EventSink? = null
     private var activity: Activity? = null
-
-    private val restrictionsReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            eventSink?.success(getApplicationRestrictions())
-        }
-    }
-
     private val gson = GsonBuilder().registerTypeAdapterFactory(BundleTypeAdapterFactory())
         .create()
 
+    private var reporter: KeyedAppStatesReporter? = null
+
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        reporter = KeyedAppStatesReporter.create(flutterPluginBinding.applicationContext)
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "managed_configurations_method")
         channel!!.setMethodCallHandler(this)
@@ -40,7 +38,7 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
             EventChannel(flutterPluginBinding.binaryMessenger, "managed_configurations_event")
         eventChannel!!.setStreamHandler(
             object : EventChannel.StreamHandler {
-                override fun onListen(args: Any?, sink: EventChannel.EventSink) {
+                override fun onListen(args: Any?, sink: EventSink) {
                     eventSink = sink
                 }
 
@@ -55,46 +53,80 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
         )
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        when (call.method) {
-            "getManagedConfigurations" -> result.success(getApplicationRestrictions())
-            else -> result.notImplemented()
-        }
-    }
-
-
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        reporter = null
         channel?.setMethodCallHandler(null)
         eventChannel?.setStreamHandler(null)
         flutterPluginBinding.applicationContext.unregisterReceiver(restrictionsReceiver)
     }
 
-    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        activity = binding.activity
+    override fun onAttachedToActivity(activityPluginBinding: ActivityPluginBinding) {
+        activity = activityPluginBinding.activity
     }
 
     override fun onDetachedFromActivity() {
         activity = null
     }
 
-    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        activity = binding.activity
+    override fun onReattachedToActivityForConfigChanges(activityPluginBinding: ActivityPluginBinding) {
+        activity = activityPluginBinding.activity
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
         activity = null
     }
 
-    private fun getApplicationRestrictions(): String? {
+    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+        when (call.method) {
+            "getManagedConfigurations" -> getManagedConfigurations(result)
+            "reportKeyedAppState" -> reportKeyedAppState(result, call)
+            else -> result.notImplemented()
+        }
+    }
+
+    private fun getManagedConfigurations(result: Result) {
+        try {
+            result.success(getApplicationRestrictions())
+        } catch (e: Exception) {
+            result.error("getManagedConfigurations", e.message, e.stackTrace)
+        }
+    }
+
+    private fun reportKeyedAppState(result: Result, call: MethodCall) {
+        try {
+            val key = call.argument<String>("key")!!
+            val severity = call.argument<Int>("severity")!!
+            val message = call.argument<String>("message")
+            val data = call.argument<String>("data")
+            val states = hashSetOf(
+                KeyedAppState.builder()
+                    .setKey(key)
+                    .setSeverity(severity)
+                    .setMessage(message)
+                    .setData(data)
+                    .build()
+            )
+            reporter!!.setStatesImmediate(states, null)
+            result.success(null)
+        } catch (e: Exception) {
+            result.error("reportKeyedAppState", e.message, e.stackTrace)
+        }
+    }
+
+    private val restrictionsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            try {
+                eventSink?.success(getApplicationRestrictions())
+            } catch (e: Exception) {
+                eventSink?.error("restrictionsReceiver", e.message, e.stackTrace)
+            }
+        }
+    }
+
+    private fun getApplicationRestrictions(): String {
         val restrictionManager =
-            activity?.getSystemService(Context.RESTRICTIONS_SERVICE) as RestrictionsManager?
-                ?: return null
-        // Get the current configuration bundle
+            activity!!.getSystemService(Context.RESTRICTIONS_SERVICE) as RestrictionsManager
         val applicationRestrictions = restrictionManager.applicationRestrictions
-        //val json = JSONObject()
         return gson.toJson(applicationRestrictions).toString()
     }
 }
-
-
-

@@ -4,6 +4,20 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 const String getManagedConfiguration = "getManagedConfigurations";
+const String reportKeyedAppState = "reportKeyedAppState";
+
+enum Severity { SEVERITY_INFO, SEVERITY_ERROR }
+
+extension SeverityExtensions on Severity {
+  int toInteger() {
+    switch (this) {
+      case Severity.SEVERITY_INFO:
+        return 1;
+      case Severity.SEVERITY_ERROR:
+        return 2;
+    }
+  }
+}
 
 class ManagedConfigurations {
   static const MethodChannel _managedConfigurationMethodChannel =
@@ -48,6 +62,23 @@ class ManagedConfigurations {
     } else {
       return null;
     }
+  }
+
+  static Future<void> reportKeyedAppStates(
+    String key,
+    Severity severity,
+    String? message,
+    String? data,
+  ) async {
+    await _managedConfigurationMethodChannel.invokeMethod(
+      reportKeyedAppState,
+      {
+        'key': key,
+        'severity': severity.toInteger(),
+        'message': message,
+        'data': data,
+      },
+    );
   }
 
   static dispose() {
