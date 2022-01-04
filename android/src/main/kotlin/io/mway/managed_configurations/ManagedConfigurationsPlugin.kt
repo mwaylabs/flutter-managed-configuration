@@ -66,6 +66,7 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel?.setMethodCallHandler(null)
         eventChannel?.setStreamHandler(null)
+        flutterPluginBinding.applicationContext.unregisterReceiver(restrictionsReceiver)
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
