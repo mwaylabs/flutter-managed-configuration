@@ -72,6 +72,7 @@ class ManagedConfigurations {
     String? message,
     String? data,
   ) async {
+    if (Platform.isAndroid) {
       await _managedConfigurationMethodChannel.invokeMethod(
         reportKeyedAppState,
         {
@@ -81,6 +82,7 @@ class ManagedConfigurations {
           'data': data,
         },
       );
+    }
   }
 
   static dispose() {
