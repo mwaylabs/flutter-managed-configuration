@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 
@@ -64,21 +65,24 @@ class ManagedConfigurations {
     }
   }
 
+  /// This method is only supported on Android Platform
   static Future<void> reportKeyedAppStates(
     String key,
     Severity severity,
     String? message,
     String? data,
   ) async {
-    await _managedConfigurationMethodChannel.invokeMethod(
-      reportKeyedAppState,
-      {
-        'key': key,
-        'severity': severity.toInteger(),
-        'message': message,
-        'data': data,
-      },
-    );
+    if (Platform.isAndroid) {
+      await _managedConfigurationMethodChannel.invokeMethod(
+        reportKeyedAppState,
+        {
+          'key': key,
+          'severity': severity.toInteger(),
+          'message': message,
+          'data': data,
+        },
+      );
+    }
   }
 
   static dispose() {

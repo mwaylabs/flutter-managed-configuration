@@ -49,19 +49,38 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Managed App Config'),
         ),
         body: Center(
-          child: Column(
+          child: ListView(
             children: [
-              Text('Managed app config: $_managedAppConfigurations\n'),
+              ListTile(
+                title: Text('Initial managed configuration:'),
+                subtitle: Text('$_managedAppConfigurations\n'),
+              ),
               StreamBuilder<Map<String, dynamic>?>(
                 stream: ManagedConfigurations.mangedConfigurationsStream,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(json.encode(snapshot.data));
-                  } else {
-                    return Text("No changes at the moment");
-                  }
+                  return ListTile(
+                      title: Text('Live managed configuraiton:'),
+                      subtitle: snapshot.hasData
+                          ? Text(json.encode(snapshot.data))
+                          : Text("No changes at the moment"));
                 },
-              )
+              ),
+              OutlinedButton(
+                  onPressed: () {
+                    //only Android
+                    ManagedConfigurations.reportKeyedAppStates(
+                      "some_key",
+                      Severity.SEVERITY_INFO,
+                      "Applied managed config",
+                      json.encode(
+                        {
+                          "prop1": true,
+                          "datetime": "${DateTime.now().toIso8601String()}"
+                        },
+                      ),
+                    );
+                  },
+                  child: Text("Report app state"))
             ],
           ),
         ),
