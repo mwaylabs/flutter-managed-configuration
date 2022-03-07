@@ -29,4 +29,15 @@ ManagedConfigurations.mangedConfigurationsStream.listen((managedAppConfig){
 });
 ```
 
+### (Android) Report state with KeyedAppStatesReporter
+
+For more info please checkout Android doc:
+https://developer.android.com/reference/kotlin/androidx/enterprise/feedback/KeyedAppStatesReporter
+
+```dart
+   ManagedConfigurations.reportKeyedAppStates("key", Severity.SEVERITY_INFO, "message", "data");
+```
+
+
+
 
