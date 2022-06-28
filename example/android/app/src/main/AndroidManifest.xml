@@ -4,6 +4,10 @@
         android:label="managed_configurations_example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+	    <meta-data android:name="android.content.APP_RESTRICTIONS"
+                android:resource="@xml/app_restrictions" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
