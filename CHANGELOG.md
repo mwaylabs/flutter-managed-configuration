@@ -1,3 +1,5 @@
+## 0.1.1
+* Fix plugin crashes in background on Android.
 ## 0.1.0
 * Support nested hierarchy for Managed Configuration #1
 * (Android) Report state back with KeyedAppStatesReporter #1

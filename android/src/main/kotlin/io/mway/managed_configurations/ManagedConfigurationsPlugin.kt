@@ -2,6 +2,7 @@ package io.mway.managed_configurations
 
 import android.app.Activity
 import android.content.*
+import android.util.Log
 import androidx.annotation.NonNull
 import androidx.enterprise.feedback.KeyedAppState
 import androidx.enterprise.feedback.KeyedAppStatesReporter
@@ -22,13 +23,14 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
     private var channel: MethodChannel? = null
     private var eventChannel: EventChannel? = null
     private var eventSink: EventSink? = null
-    private var activity: Activity? = null
+    private var context: Context? = null
     private val gson = GsonBuilder().registerTypeAdapterFactory(BundleTypeAdapterFactory())
         .create()
 
     private var reporter: KeyedAppStatesReporter? = null
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        context = flutterPluginBinding.applicationContext
         reporter = KeyedAppStatesReporter.create(flutterPluginBinding.applicationContext)
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "managed_configurations_method")
@@ -61,19 +63,19 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
     }
 
     override fun onAttachedToActivity(activityPluginBinding: ActivityPluginBinding) {
-        activity = activityPluginBinding.activity
+        context = activityPluginBinding.activity
     }
 
     override fun onDetachedFromActivity() {
-        activity = null
+        context = null
     }
 
     override fun onReattachedToActivityForConfigChanges(activityPluginBinding: ActivityPluginBinding) {
-        activity = activityPluginBinding.activity
+        context = activityPluginBinding.activity
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        activity = null
+        context = null
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -88,7 +90,7 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
         try {
             result.success(getApplicationRestrictions())
         } catch (e: Exception) {
-            result.error("getManagedConfigurations", e.message, e.stackTrace)
+            result.error("getManagedConfigurations", e.message, Log.getStackTraceString(e))
         }
     }
 
@@ -109,7 +111,7 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
             reporter!!.setStatesImmediate(states, null)
             result.success(null)
         } catch (e: Exception) {
-            result.error("reportKeyedAppState", e.message, e.stackTrace)
+            result.error("reportKeyedAppState", e.message, Log.getStackTraceString(e))
         }
     }
 
@@ -118,14 +120,14 @@ class ManagedConfigurationsPlugin : FlutterPlugin, MethodCallHandler, ActivityAw
             try {
                 eventSink?.success(getApplicationRestrictions())
             } catch (e: Exception) {
-                eventSink?.error("restrictionsReceiver", e.message, e.stackTrace)
+                eventSink?.error("restrictionsReceiver", e.message, Log.getStackTraceString(e))
             }
         }
     }
 
     private fun getApplicationRestrictions(): String {
         val restrictionManager =
-            activity!!.getSystemService(Context.RESTRICTIONS_SERVICE) as RestrictionsManager
+            context!!.getSystemService(Context.RESTRICTIONS_SERVICE) as RestrictionsManager
         val applicationRestrictions = restrictionManager.applicationRestrictions
         return gson.toJson(applicationRestrictions).toString()
     }
