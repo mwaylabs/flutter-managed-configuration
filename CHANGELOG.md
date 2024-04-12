@@ -1,4 +1,7 @@
-##
+## 0.1.2
+* Migrate to federated
+* Min Flutter Version 3.10.6 due to shared swift code
+* MacOS support
 ## 0.1.1
 * Fix plugin crashes in background on Android.
 ## 0.1.0
