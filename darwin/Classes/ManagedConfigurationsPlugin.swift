@@ -1,18 +1,30 @@
-import Flutter
-import UIKit
+#if os(iOS)
+    import Flutter
+#elseif os(macOS)
+    import FlutterMacOS
+#endif
 
 /**
 ManagedConfiguration Plugin iOS:
  */
-public class SwiftManagedConfigurationsPlugin: NSObject, FlutterPlugin {
+public class ManagedConfigurationsPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
     //method channel
-    let channel = FlutterMethodChannel(name: "managed_configurations_method", binaryMessenger: registrar.messenger())
-    // event channel
-    let eventChannel = FlutterEventChannel(name: "managed_configurations_event", binaryMessenger: registrar.messenger())
-            eventChannel.setStreamHandler(SwiftStreamHandler())
+    #if os(iOS)
+      let channel = FlutterMethodChannel(name: "managed_configurations_method", binaryMessenger: registrar.messenger())
+      // event channel
+      let eventChannel = FlutterEventChannel(name: "managed_configurations_event", binaryMessenger: registrar.messenger())
+              eventChannel.setStreamHandler(SwiftStreamHandler())
+      
+    #elseif os(macOS)
+      let channel = FlutterMethodChannel(name: "managed_configurations_method", binaryMessenger: registrar.messenger)
+      // event channel
+      let eventChannel = FlutterEventChannel(name: "managed_configurations_event", binaryMessenger: registrar.messenger)
+              eventChannel.setStreamHandler(SwiftStreamHandler())
+      
+    #endif
     
-    let instance = SwiftManagedConfigurationsPlugin()
+    let instance = ManagedConfigurationsPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
     
   }

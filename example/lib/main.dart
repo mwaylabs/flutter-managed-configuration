@@ -17,6 +17,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _managedAppConfigurations = 'Unknown';
+  final managedConfig = ManagedConfigurations();
 
   @override
   void initState() {
@@ -24,12 +25,18 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
+  @override
+  void dispose() {
+    managedConfig.dispose();
+    super.dispose();
+  }
+
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String managedAppConfigurations;
     try {
       managedAppConfigurations = json.encode(
-          await ManagedConfigurations.getManagedConfigurations ??
+          await managedConfig.getManagedConfigurations ??
               'no managed app configurations');
     } on PlatformException {
       managedAppConfigurations = 'Failed to get managed app configurations.';
@@ -56,7 +63,7 @@ class _MyAppState extends State<MyApp> {
                 subtitle: Text('$_managedAppConfigurations\n'),
               ),
               StreamBuilder<Map<String, dynamic>?>(
-                stream: ManagedConfigurations.mangedConfigurationsStream,
+                stream: managedConfig.mangedConfigurationsStream,
                 builder: (context, snapshot) {
                   return ListTile(
                       title: Text('Live managed configuraiton:'),
@@ -68,7 +75,7 @@ class _MyAppState extends State<MyApp> {
               OutlinedButton(
                   onPressed: () {
                     //only Android
-                    ManagedConfigurations.reportKeyedAppStates(
+                    managedConfig.reportKeyedAppStates(
                       "some_key",
                       Severity.SEVERITY_INFO,
                       "Applied managed config",
