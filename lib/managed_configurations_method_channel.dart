@@ -31,7 +31,7 @@ class MethodChannelManagedConfigurations extends ManagedConfigurationsPlatform {
   /// Returns a broadcast stream which calls on managed app configuration changes
   /// Json will be returned
   /// Call [dispose] when stream is not more necessary
-  static Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
+  Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
     if (_actionApplicationRestrictionsChangedSubscription == null) {
       _actionApplicationRestrictionsChangedSubscription =
           _managedConfigurationEventChannel
@@ -46,11 +46,12 @@ class MethodChannelManagedConfigurations extends ManagedConfigurationsPlatform {
     return _managedConfigurationsStream;
   }
 
-  static StreamSubscription<dynamic>?
+  StreamSubscription<dynamic>?
       _actionApplicationRestrictionsChangedSubscription;
 
   /// Returns managed app configurations as Json
-  static Future<Map<String, dynamic>?> get getManagedConfigurations async {
+  @override
+  Future<Map<String, dynamic>?> get getManagedConfigurations async {
     final String? rawJson = await _managedConfigurationMethodChannel
         .invokeMethod(getManagedConfiguration);
     if (rawJson != null) {
@@ -61,7 +62,7 @@ class MethodChannelManagedConfigurations extends ManagedConfigurationsPlatform {
   }
 
   /// This method is only supported on Android Platform
-  static Future<void> reportKeyedAppStates(
+  Future<void> reportKeyedAppStates(
     String key,
     Severity severity,
     String? message,
@@ -80,7 +81,7 @@ class MethodChannelManagedConfigurations extends ManagedConfigurationsPlatform {
     }
   }
 
-  static dispose() {
+  dispose() {
     _actionApplicationRestrictionsChangedSubscription?.cancel();
   }
 }

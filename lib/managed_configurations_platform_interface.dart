@@ -25,25 +25,27 @@ abstract class ManagedConfigurationsPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  static Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
+    throw UnimplementedError(
+        'mangedConfigurationsStream has not been implemented.');
   }
 
-  static Future<Map<String, dynamic>?> get getManagedConfigurations async {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<Map<String, dynamic>?> get getManagedConfigurations async {
+    throw UnimplementedError(
+        'getManagedConfigurations has not been implemented.');
   }
 
   /// This method is only supported on Android Platform
-  static Future<void> reportKeyedAppStates(
+  Future<void> reportKeyedAppStates(
     String key,
     Severity severity,
     String? message,
     String? data,
   ) async {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+    throw UnimplementedError('reportKeyedAppStates has not been implemented.');
   }
 
-  static void dispose() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  void dispose() {
+    throw UnimplementedError('dispose has not been implemented.');
   }
 }

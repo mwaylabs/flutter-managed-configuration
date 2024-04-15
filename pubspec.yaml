@@ -1,6 +1,6 @@
 name: managed_configurations
 description: Plugin to support managed app configuration provided by a Mobile device management (MDM).
-version: 0.1.2
+version: 1.0.0
 homepage: https://github.com/mwaylabs/flutter-managed-configuration
 
 

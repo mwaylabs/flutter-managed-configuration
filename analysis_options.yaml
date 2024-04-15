@@ -3,3 +3,6 @@ linter:
   rules:
     camel_case_types: false
     non_constant_identifier_names: false
+
+analyzer:
+  exclude: [/**/**.g.dart, /**/**.freezed.dart]

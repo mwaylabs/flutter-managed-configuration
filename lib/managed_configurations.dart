@@ -14,26 +14,26 @@ extension SeverityExtensions on Severity {
 }
 
 class ManagedConfigurations {
-  static Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
-    return ManagedConfigurationsPlatform.mangedConfigurationsStream;
+  Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
+    return ManagedConfigurationsPlatform.instance.mangedConfigurationsStream;
   }
 
-  static Future<Map<String, dynamic>?> get getManagedConfigurations async {
-    return ManagedConfigurationsPlatform.getManagedConfigurations;
+  Future<Map<String, dynamic>?> get getManagedConfigurations async {
+    return ManagedConfigurationsPlatform.instance.getManagedConfigurations;
   }
 
   /// This method is only supported on Android Platform
-  static Future<void> reportKeyedAppStates(
+  Future<void> reportKeyedAppStates(
     String key,
     Severity severity,
     String? message,
     String? data,
   ) async {
-    return ManagedConfigurationsPlatform.reportKeyedAppStates(
-        key, severity, message, data);
+    return ManagedConfigurationsPlatform.instance
+        .reportKeyedAppStates(key, severity, message, data);
   }
 
-  static void dispose() {
-    return ManagedConfigurationsPlatform.dispose();
+  void dispose() {
+    return ManagedConfigurationsPlatform.instance.dispose();
   }
 }
