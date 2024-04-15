@@ -25,10 +25,6 @@ abstract class ManagedConfigurationsPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
   static Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }

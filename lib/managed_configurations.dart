@@ -14,10 +14,6 @@ extension SeverityExtensions on Severity {
 }
 
 class ManagedConfigurations {
-  Future<String?> getPlatformVersion() {
-    return ManagedConfigurationsPlatform.instance.getPlatformVersion();
-  }
-
   static Stream<Map<String, dynamic>?> get mangedConfigurationsStream {
     return ManagedConfigurationsPlatform.mangedConfigurationsStream;
   }
