@@ -1,3 +1,5 @@
+## 1.0.1
+* Update README.md
 ## 1.0.0
 * @BREAKING: Migrate to federated. removed static methods. You will need to create a class before using.
 * 
