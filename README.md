@@ -19,12 +19,14 @@ It could be that you need to factory reset your android device before installing
 
 To get managed app configuration call:
 ```dart
-final managedAppConfig = await ManagedConfigurations.getManagedConfigurations;
+final managedConfig = ManagedConfigurations();
+final managedAppConfig = await managedConfig.getManagedConfigurations;
 ```
 
 To listen for managed app config changes subscribe to the stream:
 ```dart
-ManagedConfigurations.mangedConfigurationsStream.listen((managedAppConfig){
+...
+managedConfig.mangedConfigurationsStream.listen((managedAppConfig){
     print(managedAppConfig);
 });
 ```
@@ -35,7 +37,8 @@ For more info please checkout Android doc:
 https://developer.android.com/reference/kotlin/androidx/enterprise/feedback/KeyedAppStatesReporter
 
 ```dart
-   ManagedConfigurations.reportKeyedAppStates("key", Severity.SEVERITY_INFO, "message", "data");
+...
+managedConfig.reportKeyedAppStates("key", Severity.SEVERITY_INFO, "message","data");
 ```
 
 

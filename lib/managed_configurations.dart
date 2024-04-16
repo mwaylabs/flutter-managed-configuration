@@ -1,5 +1,6 @@
 import 'managed_configurations_platform_interface.dart';
 
+// ignore: constant_identifier_names
 enum Severity { SEVERITY_INFO, SEVERITY_ERROR }
 
 extension SeverityExtensions on Severity {
