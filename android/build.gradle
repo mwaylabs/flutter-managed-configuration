@@ -25,6 +25,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    if (project.android.hasProperty('namespace')) {
+        namespace 'io.mway.managed_configurations'
+    }
     compileSdkVersion 31
 
     sourceSets {
@@ -32,6 +35,11 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
