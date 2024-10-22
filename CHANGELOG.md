@@ -1,3 +1,9 @@
+## 1.1.0
+* Update README.md
+* migrated to mavenCentral in Android build.gradle #15
+* added Namespace to Android build.gradle #14
+* added compileOptions to Android build.gradle #13 #14
+* added privacy manifest to darwin (iOS/MacOS) #10
 ## 1.0.1
 * Update README.md
 ## 1.0.0
