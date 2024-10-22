@@ -38,7 +38,7 @@ public class ManagedConfigurationsPlugin: NSObject, FlutterPlugin {
   }
     
     /**
-    Handles the getManagedConfiguration method ivoked by flutter side.
+    Handles the getManagedConfiguration method invoked by flutter side.
     Writes the managed configuration in the result as json converted to String
      If something fails returns empty json string ("{}")
      */
@@ -63,7 +63,7 @@ public class ManagedConfigurationsPlugin: NSObject, FlutterPlugin {
  Used to handle the Event channel
  On Flutter stream subscribe creates an observer on UsersDefault.
  Calls on changes the mdConfigChange method
- Its not necassary to remove this observer as it will anyway removed if not used
+ Its not necessary to remove this observer as it will anyway removed if not used
  */
 class SwiftStreamHandler: NSObject, FlutterStreamHandler {
     /// save the sink as we need it to put the changes in it
@@ -81,7 +81,7 @@ class SwiftStreamHandler: NSObject, FlutterStreamHandler {
     }
     
     /**
-     handles the notification if something happend on UserDefaults
+     handles the notification if something happened on UserDefaults
      Extracts the managed configuration and converts them to json String. Checks if something changed.
      If so, puts in the sink (Flutter side will be notified)
      */
@@ -90,7 +90,6 @@ class SwiftStreamHandler: NSObject, FlutterStreamHandler {
            let jsonData = try? JSONSerialization.data(withJSONObject: managedConf, options: .prettyPrinted),
            let jsonString = String(data: jsonData, encoding: .utf8),
            let events = eventsVariable{
-            print("calling dies das")
             if lastJsonString == nil {
                 lastJsonString = jsonString
                 events(jsonString)

@@ -14,6 +14,7 @@ A new flutter plugin project.
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
+  s.resource_bundles = {'package_name_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
   
   s.platform = :ios, '9.0'
   s.platform = :osx, '10.11'
