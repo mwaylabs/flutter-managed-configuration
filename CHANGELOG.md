@@ -1,3 +1,5 @@
+## 1.1.1
+* added kotlinOptions to Android build.gradle #17
 ## 1.1.0
 * Update README.md
 * migrated to mavenCentral in Android build.gradle #15
